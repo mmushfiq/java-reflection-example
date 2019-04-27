@@ -8,6 +8,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import javax.validation.Valid;
+import java.lang.reflect.InvocationTargetException;
 
 
 /**
@@ -30,7 +31,7 @@ public class ProvisioningResource {
     }
 
     @PostMapping("/provisioning")
-    public ResponseEntity<ProvisioningResponse> startProvisioning(@Valid @RequestBody ProvisioningRequest request) {
+    public ResponseEntity<ProvisioningResponse> startProvisioning(@Valid @RequestBody ProvisioningRequest request) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         log.debug("New provisioning REST request accepted: {}", request);
         ProvisioningResponse response = provisioningService.startProvisioning(request);
         return ResponseEntity.ok(response);

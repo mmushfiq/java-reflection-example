@@ -7,6 +7,8 @@ import az.mm.javareflectionexample.engine.ProvisioningEngine;
 import az.mm.javareflectionexample.model.ProvisioningRequest;
 import az.mm.javareflectionexample.model.ProvisioningResponse;
 import org.springframework.stereotype.Service;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 
 /**
  * @author MushfigM on 4/27/2019
@@ -15,13 +17,15 @@ import org.springframework.stereotype.Service;
 public class ProvisioningService {
 
 
-    public ProvisioningResponse startProvisioning(ProvisioningRequest request) {
+    public ProvisioningResponse startProvisioning(ProvisioningRequest request) throws NoSuchMethodException, InvocationTargetException, IllegalAccessException {
 
         ProvisioningEngine provisioner = getCurrentProvisioner(request.getProviderId());
         if (provisioner == null)
             throw new IllegalArgumentException("Wrong provider id: "+request.getProviderId());
 
         ProvisioningCommand command = request.getProvisioningCommand();
+
+        /*
         switch (command){
             case INIT_SERVICE:
                 return provisioner.initService(request);
@@ -53,11 +57,17 @@ public class ProvisioningService {
                 return provisioner.updateServiceProfile(request);
             case DISCONNECT:
                 return provisioner.disconnect(request);
-             /*
-                ...other commands...
-            */
+
+             //   ...other commands..
+
             default: throw new IllegalArgumentException("UNSUPPORTED COMMAND!");
         }
+        */
+
+        Method callingMethod = ProvisioningEngine.class.getDeclaredMethod(command.getMethodName(), ProvisioningRequest.class);
+        ProvisioningResponse provisioningResponse = (ProvisioningResponse) callingMethod.invoke(provisioner, request);
+
+        return provisioningResponse;
     }
 
     public ProvisioningEngine getCurrentProvisioner(int id){

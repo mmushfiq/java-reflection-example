@@ -12,6 +12,9 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
+
+import java.lang.reflect.InvocationTargetException;
+
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.*;
 
@@ -38,7 +41,7 @@ public class ProvisioningServiceTest {
     }
 
     @Test
-    public void startProvisioning() {
+    public void startProvisioning() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
         ProvisioningRequest request = new ProvisioningRequest("654", 111111, ProvisioningCommand.CHANGE_SERVICE);
         ProvisioningResponse response = provisioningService.startProvisioning(request);
         log.debug("response: {}", response);
