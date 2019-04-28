@@ -12,9 +12,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.test.context.junit4.SpringRunner;
-
 import java.lang.reflect.InvocationTargetException;
-
+import java.util.Random;
 import static org.hamcrest.Matchers.containsString;
 import static org.junit.Assert.*;
 
@@ -48,5 +47,19 @@ public class ProvisioningServiceTest {
         assertEquals(request.getRequestId(), response.getRequestId());
         assertTrue("Status should be true", response.isStatus());
         assertThat(response.getMessage(), containsString("changeService()"));
+    }
+
+    @Test
+    public void checkAllProvisioningMethodNames() throws NoSuchMethodException, IllegalAccessException, InvocationTargetException {
+        Random r = new Random();
+        for(ProvisioningCommand command: ProvisioningCommand.values()){
+            ProvisioningRequest request = new ProvisioningRequest(String.valueOf(r.nextInt(100_000)), 111111, command);
+            ProvisioningResponse response = provisioningService.startProvisioning(request);
+            log.debug("request: {}", request);
+            log.debug("response: {}", response);
+            assertEquals(request.getRequestId(), response.getRequestId());
+            assertTrue("Status should be true", response.isStatus());
+            assertThat(response.getMessage(), containsString(command.getMethodName()));
+        }
     }
 }

@@ -20,7 +20,6 @@ public class Provider1Provisioner implements ProvisioningEngine {
         return instance;
     }
 
-
     @Override
     public ProvisioningResponse initService(ProvisioningRequest request) {
         return new ProvisioningResponse(request.getRequestId(), true, getMessage("initService()"));
